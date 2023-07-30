@@ -28,7 +28,7 @@ class GameOfLife(Engine):
     def init_board(self):
         for x in range(self.screen_size[0] // self.cell_size[0]):
             self.board.append([])
-            for y in range(self.screen_size[1] // self.cell_size[1]):
+            for _ in range(self.screen_size[1] // self.cell_size[1]):
                 self.board[x].append(Cell(CellStatus.DEAD))
 
     def check_events(self):
