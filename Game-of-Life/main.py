@@ -56,12 +56,14 @@ class GameOfLife(Engine):
                     cell.cell_y * self.cell_size[1],
                 )
 
-                cell_color = (
-                    Colors.RAYWHITE if cell.status == CellStatus.ALIVE else Colors.BLACK
-                )
+                cell_color = {
+                    CellStatus.ALIVE: Colors.BLACK,
+                    CellStatus.DEAD: Colors.RAYWHITE,
+                }[cell.status]
+
                 pygame.draw.rect(
                     self.display,
-                    Colors.RAYWHITE,
+                    cell_color,
                     pygame.Rect(
                         *position_on_screen,
                         self.cell_size[0] - 1,
