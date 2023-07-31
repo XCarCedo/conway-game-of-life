@@ -37,6 +37,28 @@ class Cell:
             CellStatus.DEAD: CellStatus.ALIVE,
         }[self.status]
 
+    def get_neighbors_count(self) -> int:
+        neighbor_count = 0
+
+        # Top
+        neighbor_count += self.game.get_cell_status(self.cell_x - 1, self.cell_y)
+        # Top-left
+        neighbor_count += self.game.get_cell_status(self.cell_x - 1, self.cell_y - 1)
+        # Top-right
+        neighbor_count += self.game.get_cell_status(self.cell_x - 1, self.cell_y + 1)
+        # Left
+        neighbor_count += self.game.get_cell_status(self.cell_x, self.cell_y - 1)
+        # Right
+        neighbor_count += self.game.get_cell_status(self.cell_x, self.cell_y + 1)
+        # Bottom
+        neighbor_count += self.game.get_cell_status(self.cell_x + 1, self.cell_y)
+        # Bottom-left
+        neighbor_count += self.game.get_cell_status(self.cell_x + 1, self.cell_y - 1)
+        # Bottom-right
+        neighbor_count += self.game.get_cell_status(self.cell_x + 1, self.cell_y + 1)
+
+        return neighbor_count
+
     def __repr__(self):
         return f"Cell({self.status})"
 
@@ -80,6 +102,14 @@ class GameOfLife(Engine):
         self.draw_cells()
 
         pygame.display.flip()
+
+    def get_cell_status(self, cell_x, cell_y):
+        try:
+            return {CellStatus.ALIVE: 1, CellStatus.DEAD: 0}[
+                self.board[cell_x][cell_y].status
+            ]
+        except IndexError:
+            return 0
 
     def draw_cells(self):
         for row in self.board:
