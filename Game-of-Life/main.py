@@ -11,10 +11,18 @@ class CellStatus(Enum):
 
 
 class Cell:
-    def __init__(self, cell_x: int, cell_y: int, status: CellStatus):
+    def __init__(
+        self, cell_x: int, cell_y: int, cell_size: tuple[int, int], status: CellStatus
+    ):
         self.cell_x = cell_x
         self.cell_y = cell_y
         self.status = status
+        self.rect = pygame.Rect(
+            cell_x * cell_size[0],
+            cell_y * cell_size[1],
+            cell_size[0] - 1,
+            cell_size[0] - 1,
+        )
 
     def __repr__(self):
         return f"Cell({self.status})"
@@ -31,7 +39,7 @@ class GameOfLife(Engine):
         for x in range(self.screen_size[0] // self.cell_size[0]):
             self.board.append([])
             for y in range(self.screen_size[1] // self.cell_size[1]):
-                self.board[x].append(Cell(x, y, CellStatus.DEAD))
+                self.board[x].append(Cell(x, y, self.cell_size, CellStatus.DEAD))
 
     def check_events(self):
         for event in pygame.event.get():
@@ -51,11 +59,6 @@ class GameOfLife(Engine):
     def draw_cells(self):
         for row in self.board:
             for cell in row:
-                position_on_screen = (
-                    cell.cell_x * self.cell_size[0],
-                    cell.cell_y * self.cell_size[1],
-                )
-
                 cell_color = {
                     CellStatus.ALIVE: Colors.BLACK,
                     CellStatus.DEAD: Colors.RAYWHITE,
@@ -64,11 +67,7 @@ class GameOfLife(Engine):
                 pygame.draw.rect(
                     self.display,
                     cell_color,
-                    pygame.Rect(
-                        *position_on_screen,
-                        self.cell_size[0] - 1,
-                        self.cell_size[1] - 1,
-                    ),
+                    cell.rect,
                 )
 
 
