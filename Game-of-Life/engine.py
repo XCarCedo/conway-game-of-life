@@ -9,6 +9,7 @@ class Engine(ABC):
         self.screen_size = screen_size
         self.configs = configs
         self.fps = fps
+        self.last_tick_time = 0
 
         self.init_engine()
         self.run()
@@ -21,7 +22,7 @@ class Engine(ABC):
         self.clock = pygame.time.Clock()
 
     def _fps_locker(self):
-        self.clock.tick(self.fps)
+        self.last_tick_time = self.clock.tick(self.fps)
 
     @abstractmethod
     def init_game(self):
