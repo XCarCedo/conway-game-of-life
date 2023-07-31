@@ -97,6 +97,11 @@ class GameOfLife(Engine):
                 self.kill_all_cells()
 
     def update(self):
+        pygame.display.set_caption(
+            f"Conway's Game Of Life | "
+            + f"{'Evoulating' if self.running_evoulation else 'Paused'} | "
+            + f"FPS: {round(self.clock.get_fps())}"
+        )
         if self.running_evoulation:
             self.since_last_evoulate += self.last_tick_time
             if self.since_last_evoulate >= self.evoulate_timer_ms:
