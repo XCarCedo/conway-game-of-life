@@ -87,8 +87,14 @@ class GameOfLife(Engine):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            if event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
+            elif event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
                 self.running_evoulation = not self.running_evoulation
+            elif (
+                event.type == pygame.KEYUP
+                and event.key == pygame.K_c
+                and not self.running_evoulation
+            ):
+                self.kill_all_cells()
 
     def update(self):
         if self.running_evoulation:
@@ -116,6 +122,11 @@ class GameOfLife(Engine):
         self.draw_cells()
 
         pygame.display.flip()
+
+    def kill_all_cells(self):
+        for row in self.board:
+            for cell in row:
+                cell.status = CellStatus.DEAD
 
     def get_cell_status(self, cell_x, cell_y):
         try:
