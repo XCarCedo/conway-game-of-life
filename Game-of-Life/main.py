@@ -1,4 +1,3 @@
-import copy
 import math
 import pygame
 
@@ -75,7 +74,7 @@ class GameOfLife(Engine):
         self.board = []
         self.since_last_evoulate = 0
         self.running_evoulation = False
-
+        self.last_changed_cell = None
         self.init_board()
 
     def init_board(self):
@@ -88,18 +87,6 @@ class GameOfLife(Engine):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            if event.type == pygame.MOUSEBUTTONUP and not self.running_evoulation:
-                lmb_pressed = event.button == 1
-                if not lmb_pressed:
-                    continue
-                mouse_pos = pygame.mouse.get_pos()
-                clicked_cell_pos = (
-                    math.floor(mouse_pos[0] / self.cell_size[0]),
-                    math.floor(mouse_pos[1] / self.cell_size[1]),
-                )
-
-                clicked_cell = self.board[clicked_cell_pos[0]][clicked_cell_pos[1]]
-                clicked_cell.toggle()
             if event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
                 self.running_evoulation = not self.running_evoulation
 
@@ -109,6 +96,19 @@ class GameOfLife(Engine):
             if self.since_last_evoulate >= self.evoulate_timer_ms:
                 self.since_last_evoulate = 0
                 self.evoulate()
+        else:
+            lmb_pressed = pygame.mouse.get_pressed()[0]
+            if not lmb_pressed:
+                return
+            mouse_pos = pygame.mouse.get_pos()
+            clicked_cell_pos = (
+                math.floor(mouse_pos[0] / self.cell_size[0]),
+                math.floor(mouse_pos[1] / self.cell_size[1]),
+            )
+            if self.last_changed_cell != clicked_cell_pos:
+                clicked_cell = self.board[clicked_cell_pos[0]][clicked_cell_pos[1]]
+                clicked_cell.toggle()
+                self.last_changed_cell = clicked_cell_pos
 
     def draw(self):
         self.display.fill(Colors.GRAY)
@@ -154,5 +154,5 @@ class GameOfLife(Engine):
 if __name__ == "__main__":
     GameOfLife(
         screen_size=(640, 640),
-        configs={"cell_size": (32, 32), "evoulate_timer_ms": 250},
+        configs={"cell_size": (16, 16), "evoulate_timer_ms": 250},
     )
