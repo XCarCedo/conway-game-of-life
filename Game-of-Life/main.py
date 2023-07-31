@@ -1,3 +1,4 @@
+import argparse
 import math
 import pygame
 
@@ -167,8 +168,41 @@ class GameOfLife(Engine):
         self.board = next_level_board
 
 
+def get_args_config() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Conway's Game of Life")
+
+    parser.add_argument(
+        "-f",
+        "--fps",
+        default=60,
+        help="The locked framerate of display window (0 for no limits)",
+    )
+    parser.add_argument(
+        "-s", "--screen-size", default="640x640", help="The size of display screen"
+    )
+    parser.add_argument(
+        "-etm",
+        "--evoulate-timer-ms",
+        default=250,
+        help="The time between each evoulate progress",
+    )
+    parser.add_argument(
+        "-cs",
+        "--cell-size",
+        default="16x16",
+        help="The size of each cell (automatically divides the display based on this value)",
+    )
+
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
+    args = get_args_config()
     GameOfLife(
-        screen_size=(640, 640),
-        configs={"cell_size": (16, 16), "evoulate_timer_ms": 250},
+        screen_size=tuple(map(int, args.screen_size.lower().split("x"))),
+        fps=int(args.fps),
+        configs={
+            "cell_size": tuple(map(int, args.cell_size.lower().split("x"))),
+            "evoulate_timer_ms": int(args.evoulate_timer_ms),
+        },
     )
