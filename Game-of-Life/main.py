@@ -1,6 +1,9 @@
 import argparse
+import json
 import math
 import pygame
+import tkinter
+import tkinter.filedialog
 
 from colors import Colors
 from engine import Engine
@@ -72,11 +75,15 @@ class GameOfLife(Engine):
     def init_game(self):
         self.cell_size = self.configs["cell_size"]
         self.evoulate_timer_ms = self.configs["evoulate_timer_ms"]
-        self.board = []
         self.since_last_evoulate = 0
         self.running_evoulation = False
         self.last_changed_cell = None
-        self.init_board()
+
+        if "loaded_board" in self.configs:
+            self.board = self.get_loadable_board(self.configs["loaded_board"])
+        else:
+            self.board = []
+            self.init_board()
 
     def init_board(self):
         for x in range(self.screen_size[0] // self.cell_size[0]):
@@ -95,7 +102,7 @@ class GameOfLife(Engine):
                 and event.key == pygame.K_c
                 and not self.running_evoulation
             ):
-                self.kill_all_cells()
+                self.clear_board()
 
     def update(self):
         pygame.display.set_caption(
@@ -110,17 +117,23 @@ class GameOfLife(Engine):
                 self.evoulate()
         else:
             lmb_pressed = pygame.mouse.get_pressed()[0]
-            if not lmb_pressed:
-                return
-            mouse_pos = pygame.mouse.get_pos()
-            clicked_cell_pos = (
-                math.floor(mouse_pos[0] / self.cell_size[0]),
-                math.floor(mouse_pos[1] / self.cell_size[1]),
-            )
-            if self.last_changed_cell != clicked_cell_pos:
-                clicked_cell = self.board[clicked_cell_pos[0]][clicked_cell_pos[1]]
-                clicked_cell.toggle()
-                self.last_changed_cell = clicked_cell_pos
+            if lmb_pressed:
+                mouse_pos = pygame.mouse.get_pos()
+                clicked_cell_pos = (
+                    math.floor(mouse_pos[0] / self.cell_size[0]),
+                    math.floor(mouse_pos[1] / self.cell_size[1]),
+                )
+                if self.last_changed_cell != clicked_cell_pos:
+                    clicked_cell = self.board[clicked_cell_pos[0]][clicked_cell_pos[1]]
+                    clicked_cell.toggle()
+                    self.last_changed_cell = clicked_cell_pos
+
+            pressed_keys = pygame.key.get_pressed()
+            if pressed_keys[pygame.K_RCTRL] or pressed_keys[pygame.K_LCTRL]:
+                if pressed_keys[pygame.K_s]:
+                    self.save_state_file()
+                elif pressed_keys[pygame.K_r]:
+                    self.load_state_file()
 
     def draw(self):
         self.display.fill(Colors.GRAY)
@@ -129,7 +142,69 @@ class GameOfLife(Engine):
 
         pygame.display.flip()
 
-    def kill_all_cells(self):
+    def get_saveable_board(self):
+        return [
+            [{CellStatus.DEAD: 0, CellStatus.ALIVE: 1}[cell.status] for cell in row]
+            for row in self.board
+        ]
+
+    def get_loadable_board(self, config_json):
+        new_board = []
+        for x, row in enumerate(config_json):
+            new_board.append([])
+            for y, cell in enumerate(row):
+                new_board[x].append(
+                    Cell(
+                        x,
+                        y,
+                        self.cell_size,
+                        {0: CellStatus.DEAD, 1: CellStatus.ALIVE}[cell],
+                        self,
+                    )
+                )
+        return new_board
+
+    def unpack_state(self, config_json):
+        pygame.quit()
+        GameOfLife(
+            config_json["screen_size"],
+            self.fps,
+            {
+                "cell_size": self.cell_size,
+                "evoulate_timer_ms": self.evoulate_timer_ms,
+                "loaded_board": config_json["board"],
+            },
+        )
+
+    def save_state_file(self):
+        top = tkinter.Tk()
+        top.withdraw()
+        state_file_path = tkinter.filedialog.asksaveasfilename(
+            parent=top, filetypes=(("Game of Life State", ".gols"),)
+        )
+        top.destroy()
+
+        saved_state = {
+            "board": self.get_saveable_board(),
+            "cell_size": self.cell_size,
+            "screen_size": self.screen_size,
+        }
+        with open(state_file_path, mode="w") as save_state_file:
+            json.dump(saved_state, save_state_file)
+
+    def load_state_file(self):
+        top = tkinter.Tk()
+        top.withdraw()
+        state_file_path = tkinter.filedialog.askopenfilename(
+            parent=top, filetypes=(("Game of Life State", ".gols"),)
+        )
+        top.destroy()
+
+        with open(state_file_path, mode="r") as load_state_file:
+            saved_state = json.load(load_state_file)
+            self.unpack_state(saved_state)
+
+    def clear_board(self):
         for row in self.board:
             for cell in row:
                 cell.status = CellStatus.DEAD
@@ -174,7 +249,7 @@ def get_args_config() -> argparse.Namespace:
     parser.add_argument(
         "-f",
         "--fps",
-        default=60,
+        default=0,
         help="The locked framerate of display window (0 for no limits)",
     )
     parser.add_argument(
