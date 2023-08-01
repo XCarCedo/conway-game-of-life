@@ -47,3 +47,4 @@ class Engine(ABC):
             self.check_events()
             self.update()
             self.draw()
+        pygame.quit()
