@@ -45,6 +45,6 @@ class Engine(ABC):
         while self.running:
             self._fps_locker()
             self.check_events()
-            self.update()
             self.draw()
+            self.update()
         pygame.quit()

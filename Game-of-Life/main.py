@@ -165,7 +165,7 @@ class GameOfLife(Engine):
         return new_board
 
     def unpack_state(self, config_json):
-        pygame.quit()
+        self.running = False
         GameOfLife(
             config_json["screen_size"],
             self.fps,
