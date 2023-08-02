@@ -51,7 +51,7 @@ options:
 
 ## Known Bugs and Issues
 - The program memory usage goes up about 2-5mb every time loading a new state by ctrl+r and this keeps adding up until the program closed
-- Edges don't work correctly always there's some random cells appear to be alive sometimes
+- Edges don't work correctly sometimes edge cells on right side glitch to left side
 
 ## Contributing
 
