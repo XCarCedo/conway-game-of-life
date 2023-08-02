@@ -1,7 +1,7 @@
 import argparse
 import json
 import math
-from typing import Any, Union
+from typing import Union
 import pygame
 import tkinter
 import tkinter.filedialog
