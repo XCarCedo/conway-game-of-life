@@ -1,7 +1,7 @@
 
 # Conway's Game of Life
 
-A simple implemention of conway Game of Life in python and pygame
+A simple implemention of conway Game of Life in python and pygame-ce
 
 
 
