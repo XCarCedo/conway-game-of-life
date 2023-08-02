@@ -1,7 +1,7 @@
 import argparse
 import json
 import math
-from typing import Union
+import pathlib
 import pygame
 import tkinter
 import tkinter.filedialog
@@ -9,6 +9,7 @@ import tkinter.filedialog
 from colors import Colors
 from engine import Engine
 from enum import Enum
+from typing import Union
 
 
 class CellStatus(Enum):
@@ -113,6 +114,11 @@ class GameOfLife(Engine):
         else:
             self.board = []
             self.init_board()
+
+        icon = pygame.image.load(
+            pathlib.Path(__file__).parent.parent.joinpath("assets/icon.png")
+        ).convert()
+        pygame.display.set_icon(icon)
 
     def init_board(self) -> None:
         """If the progarm is not in a loaded state creates each cell with defautl statues of DEAD"""
