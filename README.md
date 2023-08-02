@@ -9,7 +9,7 @@ A simple implemention of conway Game of Life in python and pygame
 
 First you need to clone the project:
 ```bash
-git clone https://github.com/XCarCedo/conway-game-of-life/
+git clone https://github.com/XCarCedo/conway-game-of-life.git
 cd conway-game-of-life
 ```
 
