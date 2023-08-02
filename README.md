@@ -46,8 +46,8 @@ options:
 ```
 
 ## Screenshots
-![Screenshot 1](assets/screenshots/screenshot1.png)
-![Screenshot 2](assets/screenshots/screenshot1.png)
+![Screenshot 1](assets/screenshots/screenshot1.jpg)
+![Screenshot 2](assets/screenshots/screenshot1.jpg)
 
 ## Known Bugs and Issues
 - The program memory usage goes up about 2-5mb every time loading a new state by ctrl+r and this keeps adding up until the program closed
