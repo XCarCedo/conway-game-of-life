@@ -55,7 +55,7 @@ options:
 
 ## Contributing
 
-This project isn't perfect there are still problems that i'm aware so Issues/PR are welcome!
+This project isn't perfect there are still problems that i'm aware of, so Issues/PR are welcome!
 
 ## License
 
