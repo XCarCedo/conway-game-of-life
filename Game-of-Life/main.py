@@ -106,7 +106,7 @@ class GameOfLife(Engine):
         self.cell_size = self.configs["cell_size"]
         self.evoulate_timer_ms = self.configs["evoulate_timer_ms"]
         self.since_last_evoulate = 0
-        self.running_evoulation = False
+        self.running_evolution = False
         self.last_changed_cell = None
 
         if "loaded_board" in self.configs:
@@ -133,11 +133,11 @@ class GameOfLife(Engine):
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
-                self.running_evoulation = not self.running_evoulation
+                self.running_evolution = not self.running_evolution
             elif (
                 event.type == pygame.KEYUP
                 and event.key == pygame.K_c
-                and not self.running_evoulation
+                and not self.running_evolution
             ):
                 self.clear_board()
 
@@ -147,10 +147,10 @@ class GameOfLife(Engine):
         """
         pygame.display.set_caption(
             f"Conway's Game Of Life | "
-            + f"{'Evoulating' if self.running_evoulation else 'Paused'} | "
+            + f"{'Evoulating' if self.running_evolution else 'Paused'} | "
             + f"FPS: {round(self.clock.get_fps())}"
         )
-        if self.running_evoulation:
+        if self.running_evolution:
             self.since_last_evoulate += self.last_tick_time
             if self.since_last_evoulate >= self.evoulate_timer_ms:
                 self.since_last_evoulate = 0
