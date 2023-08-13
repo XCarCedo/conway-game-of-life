@@ -71,7 +71,7 @@ class Cell:
         """Calculates the amount of alive neighbors
 
         Returns:
-            int: Teh amount of alive neighbors
+            int: The amount of alive neighbors
         """
         neighbor_count = 0
 
