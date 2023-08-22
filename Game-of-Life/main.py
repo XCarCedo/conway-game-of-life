@@ -120,6 +120,9 @@ class GameOfLife(Engine):
         ).convert()
         pygame.display.set_icon(icon)
 
+        self.display.set_alpha(None)
+        pygame.event.set_allowed([pygame.QUIT, pygame.KEYUP])
+
     def init_board(self) -> None:
         """If the progarm is not in a loaded state creates each cell with defautl statues of DEAD"""
         for x in range(self.screen_size[0] // self.cell_size[0]):
